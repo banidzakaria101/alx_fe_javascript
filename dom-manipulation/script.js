@@ -125,14 +125,14 @@ function filterQuotes() {
 
 // —————————— Server Sync & Conflict Handling ——————————
 
-function fetchQuotesFromServer() {
-  return fetch(SERVER_URL)
-    .then(res => res.json())
-    .then(data => data.map(item => ({
-      id: item.id, 
-      text: item.body || item.title || "",
-      category: "Server"
-    })));
+async function fetchQuotesFromServer() {
+  const response = await fetch(SERVER_URL);
+  const data = await response.json();
+  return data.map(item => ({
+    id: item.id,
+    text: item.body || item.title || "",
+    category: "Server"
+  }));
 }
 
 function syncFromServer() {
