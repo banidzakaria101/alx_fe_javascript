@@ -125,7 +125,7 @@ function filterQuotes() {
 
 // —————————— Server Sync & Conflict Handling ——————————
 
-function fetchFromServer() {
+function fetchQuotesFromServer() {
   return fetch(SERVER_URL)
     .then(res => res.json())
     .then(data => data.map(item => ({
