@@ -202,6 +202,8 @@ if (document.getElementById("categoryFilter")) {
 }
 startSync();
 
+// —————————— export / emport json file ——————————
+
 function exportToJsonFile() {
   const dataStr = JSON.stringify(quotes, null, 2);
   const blob = new Blob([dataStr], { type: "application/json" });
@@ -214,3 +216,27 @@ function exportToJsonFile() {
 
   URL.revokeObjectURL(url); 
 }
+
+function importFromJsonFile(event) {
+  const fileReader = new FileReader();
+
+  fileReader.onload = function(e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      if (Array.isArray(importedQuotes)) {
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        populateCategories();
+        updateCategoryDropdown();
+        alert("Quotes imported successfully!");
+      } else {
+        alert("Invalid JSON format.");
+      }
+    } catch (err) {
+      alert("Failed to parse JSON file.");
+    }
+  };
+
+  fileReader.readAsText(event.target.files[0]);
+}
+
