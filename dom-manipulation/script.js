@@ -135,6 +135,10 @@ async function fetchQuotesFromServer() {
   }));
 }
 
+function syncQuotes() {
+  syncFromServer();
+}
+
 function syncFromServer() {
   fetchFromServer()
     .then(serverQuotes => {
@@ -178,6 +182,8 @@ function startSync() {
 }
 
 // —————————— Initialization ——————————
+
+document.getElementById("syncButton")?.addEventListener("click", syncQuotes);
 
 document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 loadQuotes();
