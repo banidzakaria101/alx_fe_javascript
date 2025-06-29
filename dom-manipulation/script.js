@@ -139,31 +139,34 @@ function syncQuotes() {
   syncFromServer();
 }
 
-function syncFromServer() {
-  fetchFromServer()
-    .then(serverQuotes => {
-      const localIds = quotes.map(q => q.id);
-      let changed = false;
+async function syncFromServer() {
+  try {
+    const serverQuotes = await fetchQuotesFromServer();
+    const localIds = quotes.map(q => q.id);
+    let changed = false;
 
-      serverQuotes.forEach(sq => {
-        const local = quotes.find(q => q.id === sq.id);
-        if (!local) {
-          quotes.push(sq);
-          changed = true;
-        } else if (local.text !== sq.text || local.category !== sq.category) {
-          quotes = quotes.map(q => q.id === sq.id ? sq : q);
-          changed = true;
-        }
-      });
-
-      if (changed) {
-        saveQuotes();
-        populateCategories();
-        updateCategoryDropdown();
-        document.getElementById("syncStatus").textContent = "✳️ Data updated from server";
+    serverQuotes.forEach(sq => {
+      const local = quotes.find(q => q.id === sq.id);
+      if (!local) {
+        quotes.push(sq);
+        changed = true;
+      } else if (local.text !== sq.text || local.category !== sq.category) {
+        quotes = quotes.map(q => q.id === sq.id ? sq : q);
+        changed = true;
       }
-    })
-    .catch(_=> document.getElementById("syncStatus").textContent = "⚠️ Sync failed");
+    });
+
+    if (changed) {
+      saveQuotes();
+      populateCategories();
+      updateCategoryDropdown();
+      document.getElementById("syncStatus").textContent = "✳️ Data updated from server";
+    }
+
+    alert("Quotes synced with server!");
+  } catch (error) {
+    document.getElementById("syncStatus").textContent = "⚠️ Sync failed";
+  }
 }
 
 function syncToServer(newItems) {
